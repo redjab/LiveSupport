@@ -1,0 +1,86 @@
+﻿<div id="chat-box">
+    <div id="message-window" class="chat-msgs">
+        <ol class="discussion">
+            <li class="other">
+                <div class="name">
+                    <p>Minh Do</p>
+                </div>
+                <div class="messages">
+                    <p>yeah, they do early flights cause they connect with big airports.  they wanna get u to your connection</p>
+                    <time datetime="2009-11-13T20:00">51 min</time>
+                </div>
+            </li>
+            <li class="self">
+                <div class="name">
+                    <p>Me</p>
+                </div>
+                <div class="messages">
+                    <p>It's a pretty small airport.</p>
+                    <time datetime="2009-11-13T20:14">37 mins</time>
+                </div>
+            </li>
+        </ol>
+    </div>
+    <div id="chat-controls" class="row">
+        <div class="col-md-12">
+            <div class="input-group">
+                <input type="text" id="post-msg" class="form-control" placeholder="Enter your message here">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-primary" type="button">Send</button>
+                </span>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+</div>    
+<style>
+    #post-msg {
+        max-width: 100%;
+    }
+
+    #message-window {
+        border-radius: 5px;
+        min-height: 400px;
+        left:0;
+        right:0;
+        border-style: groove;
+        background-color: #e5e5e5;
+    }
+
+    .discussion {
+        list-style: none;
+        background: #e5e5e5;
+        margin: 0;
+        padding: 0 0 50px 0;
+    }
+
+    .discussion > li {
+    padding: 0.5rem;
+    overflow: hidden;
+    }
+
+    .name {
+        min-width: 80px;
+    }
+
+    .messages {
+        background: white;
+        padding: 10px;
+        border-radius: 2px;
+        box-shadow: 0 1px 2px;
+        margin-bottom: 10px;
+    }
+
+    .messages > p {
+        margin: 0 0 0 0;
+    }
+
+    .name > p {
+        font-family: serif;
+        margin: 0 0 0;
+    }
+    .messages> time {
+        font-size: 0.7rem;
+        color: #ccc;
+    }
+</style>
+
