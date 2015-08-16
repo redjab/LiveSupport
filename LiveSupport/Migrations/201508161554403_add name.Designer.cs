@@ -7,13 +7,13 @@ namespace LiveSupport.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class test : IMigrationMetadata
+    public sealed partial class addname : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(test));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(addname));
         
         string IMigrationMetadata.Id
         {
-            get { return "201508151750107_test"; }
+            get { return "201508161554403_add name"; }
         }
         
         string IMigrationMetadata.Source

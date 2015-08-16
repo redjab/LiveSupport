@@ -175,9 +175,9 @@
     </Compile>
     <Compile Include="Hubs\User.cs" />
     <Compile Include="Hubs\ChatHub.cs" />
-    <Compile Include="Migrations\201508151750107_test.cs" />
-    <Compile Include="Migrations\201508151750107_test.Designer.cs">
-      <DependentUpon>201508151750107_test.cs</DependentUpon>
+    <Compile Include="Migrations\201508161554403_add name.cs" />
+    <Compile Include="Migrations\201508161554403_add name.Designer.cs">
+      <DependentUpon>201508161554403_add name.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -208,6 +208,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\signalr\chat.js" />
+    <Content Include="Scripts\signalr\agent.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -262,8 +264,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201508151750107_test.resx">
-      <DependentUpon>201508151750107_test.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201508161554403_add name.resx">
+      <DependentUpon>201508161554403_add name.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

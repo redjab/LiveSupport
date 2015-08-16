@@ -37,6 +37,8 @@ namespace LiveSupport.Migrations
 
             if (!context.Users.Any(x => x.UserName == "quocminhdo92@gmail.com")){
                 var user = new ApplicationUser {
+                    FirstName = "Minh",
+                    LastName = "Do",
                     UserName = "quocminhdo92@gmail.com",
                     Email = "quocminhdo92@gmail.com",
                 };
@@ -48,6 +50,8 @@ namespace LiveSupport.Migrations
             if (!context.Users.Any(x => x.UserName == "agent@test.com")){
                 var user = new ApplicationUser
                 {
+                    FirstName = "Agent",
+                    LastName = "Smith",
                     UserName = "agent@test.com",
                     Email = "agent@test.com"
                 };
@@ -59,6 +63,8 @@ namespace LiveSupport.Migrations
             {
                 var user = new ApplicationUser
                 {
+                    FirstName = "Real",
+                    LastName = "User",
                     UserName = "user@test.com",
                     Email = "user@test.com"
                 };
