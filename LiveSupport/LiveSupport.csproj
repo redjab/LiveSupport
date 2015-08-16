@@ -248,6 +248,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Support\_Chatbox.cshtml" />
     <Content Include="Views\Support\Agent.cshtml" />
+    <Content Include="Views\Support\Index.cshtml" />
+    <Content Include="Views\Shared\_Barebone.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

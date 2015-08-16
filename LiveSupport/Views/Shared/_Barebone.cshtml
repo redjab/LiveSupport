@@ -7,9 +7,14 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
+    <style>
+        body {
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
-    <div class="container body-content">
+    <div>
         @RenderBody()
     </div>
 
