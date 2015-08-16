@@ -24,6 +24,7 @@ namespace LiveSupport.Hubs
         private static ConcurrentDictionary<User, User> ChatSessions;
 
         private const string FROM_ADMIN = "Administrator";
+        private const string NO_AGENT = "No agent is currently online. Please try again later.";
         private const string AGENT_DISCONNECT = "The agent was disconnected from chat. Please reopen the page if you want to talk to another agent.";
         private const string USER_DISCONNECT = "The visitor was disconnected from chat.";
         private const string SESSION_NOT_FOUND = "Chat session not found, please reload the page.";
@@ -56,24 +57,33 @@ namespace LiveSupport.Hubs
             var userName = HttpContext.Current.User.Identity.Name;
             var fullName = getFullName();
 
-            if (!Agents.Any(x => x.Key == userName))
+            var agent = Agents.Where(x => x.Key == userName).FirstOrDefault();
+            if (agent.Key == null)
             {
-                var User = new User{
+                var newAgent = new User
+                {
                     ConnectionID = Context.ConnectionId,
                     UserName = userName,
                     FullName = fullName,
                 };
-                Agents.TryAdd(userName, User);
+                Agents.TryAdd(userName, newAgent);
+            }
+            //this happens if the agent opens a new tab of the support page without closing the other
+            //remove all sessions with previous connection id, and update the Agents dict
+            else
+            {
+                RemoveAgentSession(Agents[userName].ConnectionID, false);
+                Agents[userName].ConnectionID = Context.ConnectionId;
             }
         }
-        private User RemoveAgentSession(string connectionId, bool removeAgent)
+        private void RemoveAgentSession(string connectionId, bool removeAgent)
         {
             User temp = null;
 
             var agent = Agents.SingleOrDefault(x => x.Value.ConnectionID == connectionId).Value;
             if (agent != null)
             {
-                var sessions = ChatSessions.Where(x => x.Value == agent);
+                var sessions = ChatSessions.Where(x => x.Value.UserName == agent.UserName);
                 if (sessions != null)
                 {
                     foreach (var session in sessions)
@@ -88,7 +98,6 @@ namespace LiveSupport.Hubs
                     Agents.TryRemove(agent.UserName, out temp);
                 }
             }
-            return agent;
         }
 
         public void AgentCloseChat(string connectionId)
@@ -101,19 +110,26 @@ namespace LiveSupport.Hubs
             initAgents();
             initSessions();
             //if it's an agent
-            var agent = RemoveAgentSession(connectionId, true);
+            RemoveAgentSession(connectionId, true);
             var sessions = ChatSessions.Where(x => x.Key.ConnectionID == connectionId);
             foreach (var session in sessions)
             {
                 User temp = null;
                 //Notify the agent?
-                Clients.Client(agent.ConnectionID).addMessage(FROM_ADMIN, USER_DISCONNECT);
+                Clients.Client(session.Value.ConnectionID).addMessage(FROM_ADMIN, USER_DISCONNECT);
                 ChatSessions.TryRemove(session.Key, out temp);
             }
         }
 
         public void StartChat()
         {
+            //Let the user know if no agent is online
+            if (Agents == null || Agents.Count == 0)
+            {
+                Clients.Caller.addMessage(FROM_ADMIN, NO_AGENT);
+                return;
+            }
+            initSessions();
             //get the agent with the fewest chat sessionss
             var inSessions = Agents.Select(session => new
             {
@@ -136,9 +152,10 @@ namespace LiveSupport.Hubs
                 //Notify the agent about the new chat request
                 Clients.Client(agent.ConnectionID).newChat(Context.ConnectionId, visitor.FullName);
 
-                var agentMessage = string.Format("Hi, I'm {0}! How can I help you today?", agent.FullName);
-                Clients.Client(agent.ConnectionID).addMessage(agent.FullName, agentMessage);
-                Clients.Caller.addMessage(agent.FullName, agentMessage);
+                var agentMessage = string.Format("You are now chatting with {0}", visitor.FullName);
+                var visitorMessage = string.Format("You are now chatting with {0}", agent.FullName);
+                Clients.Client(agent.ConnectionID).addMessage(FROM_ADMIN, agentMessage);
+                Clients.Caller.addMessage(FROM_ADMIN, visitorMessage);
             }
            
         }

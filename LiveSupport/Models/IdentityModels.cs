@@ -18,7 +18,7 @@ namespace LiveSupport.Models
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
-            var fullName = this.FirstName + this.LastName;
+            var fullName = this.FirstName + " " + this.LastName;
             await manager.AddClaimAsync(this.Id, new Claim("FullName", fullName));
             return userIdentity;
         }
