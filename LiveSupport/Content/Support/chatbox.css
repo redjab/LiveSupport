@@ -1,0 +1,53 @@
+﻿    #post-msg {
+        max-width: 100%;
+    }
+
+    #message-window {
+        border-radius: 5px;
+        min-height: 600px;
+        left:0;
+        right:0;
+        border-style: groove;
+        background-color: #e5e5e5;
+    }
+
+    .discussion {
+        list-style: none;
+        background: #e5e5e5;
+        margin: 0;
+        padding: 0 0 50px 0;
+    }
+
+    .discussion > li {
+    padding: 0.5rem;
+    overflow: hidden;
+    }
+
+    .name {
+        min-width: 80px;
+    }
+
+    .messages {
+        background: white;
+        padding: 10px;
+        border-radius: 2px;
+        box-shadow: 0 1px 2px;
+        margin-bottom: 10px;
+    }
+
+    .messages > p {
+        margin: 0 0 0 0;
+    }
+
+    .name > p {
+        font-family: serif;
+        margin: 0 0 0;
+    }
+    .messages> abbr.timeago {
+        font-size: 0.8rem;
+        color: #ccc;
+    }
+
+    input {
+        max-width: 100%;
+    }

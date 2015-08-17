@@ -51,13 +51,19 @@ namespace LiveSupport.Hubs
             return fullName;
         }
 
-        public void ConnectAgent()
+        public override Task OnConnected()
         {
             initAgents();
+            initSessions();
+            return base.OnConnected();
+        }
+
+        public void ConnectAgent()
+        {
             var userName = HttpContext.Current.User.Identity.Name;
             var fullName = getFullName();
 
-            var agent = Agents.Where(x => x.Key == userName).FirstOrDefault();
+            var agent = Agents.SingleOrDefault(x => x.Key == userName);
             if (agent.Key == null)
             {
                 var newAgent = new User
@@ -107,8 +113,6 @@ namespace LiveSupport.Hubs
 
         public void Leave(string connectionId)
         {
-            initAgents();
-            initSessions();
             //if it's an agent
             RemoveAgentSession(connectionId, true);
             var sessions = ChatSessions.Where(x => x.Key.ConnectionID == connectionId);
@@ -116,7 +120,7 @@ namespace LiveSupport.Hubs
             {
                 User temp = null;
                 //Notify the agent?
-                Clients.Client(session.Value.ConnectionID).addMessage(FROM_ADMIN, USER_DISCONNECT);
+                Clients.Client(session.Value.ConnectionID).addMessage(FROM_ADMIN, USER_DISCONNECT, connectionId);
                 ChatSessions.TryRemove(session.Key, out temp);
             }
         }
@@ -129,7 +133,6 @@ namespace LiveSupport.Hubs
                 Clients.Caller.addMessage(FROM_ADMIN, NO_AGENT);
                 return;
             }
-            initSessions();
             //get the agent with the fewest chat sessionss
             var inSessions = Agents.Select(session => new
             {
@@ -139,7 +142,7 @@ namespace LiveSupport.Hubs
 
             if (inSessions != null)
             {
-                var leastBusy = Agents.Where(x => x.Key == inSessions.FirstOrDefault().AgentUserName).FirstOrDefault();
+                var leastBusy = Agents.SingleOrDefault(x => x.Key == inSessions.FirstOrDefault().AgentUserName);
                 var agent = leastBusy.Value;
                 var visitor = new User
                 {
@@ -150,30 +153,53 @@ namespace LiveSupport.Hubs
                 ChatSessions.TryAdd(visitor, agent);
 
                 //Notify the agent about the new chat request
-                Clients.Client(agent.ConnectionID).newChat(Context.ConnectionId, visitor.FullName);
+                Clients.Client(agent.ConnectionID).newChat(visitor.ConnectionID, visitor.FullName);
 
                 var agentMessage = string.Format("You are now chatting with {0}", visitor.FullName);
                 var visitorMessage = string.Format("You are now chatting with {0}", agent.FullName);
-                Clients.Client(agent.ConnectionID).addMessage(FROM_ADMIN, agentMessage);
+                Clients.Client(agent.ConnectionID).addMessage(FROM_ADMIN, agentMessage, Context.ConnectionId);
                 Clients.Caller.addMessage(FROM_ADMIN, visitorMessage);
             }
            
         }
 
-        public void SendMessage(string message)
+        public void SendMessage(string message, bool isAgent)
         {
-            //snatch any url using regex pattern
-            message = Regex.Replace(message, @"(\b(?:(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%?=~_|$!:,.;]*[-A-Z0-9+&@#/%=~_|$]|((?:mailto:)?[A-Z0-9._%+-]+@[A-Z0-9._%-]+\.[A-Z]{2,6})\b)|""(?:(?:https?|ftp|file)://|www\.|ftp\.)[^""\r\n]+""|'(?:(?:https?|ftp|file)://|www\.|ftp\.)[^'\r\n]+')", "<a target='_blank' href='$1'>$1</a>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var session = ChatSessions.Where(x => x.Key.ConnectionID == Context.ConnectionId).FirstOrDefault();
-            if (session.Key != null && session.Value != null)
+            KeyValuePair<User, User> session;
+            if (!isAgent)
             {
-                Clients.Client(session.Key.ConnectionID).addMessage(session.Key.FullName, message);
-                Clients.Client(session.Value.ConnectionID).addMessage(session.Value.FullName, message);
+                session = UserSendMessage(message);
             }
             else
             {
+                session = AgentSendMessage(message);
+            }
+            if (session.Key == null || session.Value == null)
+            {
                 Clients.Caller.addMessage(FROM_ADMIN, SESSION_NOT_FOUND);
             }
+        }
+
+        private KeyValuePair<User, User> AgentSendMessage(string message)
+        {
+            var session = ChatSessions.SingleOrDefault(x => x.Value.ConnectionID == Context.ConnectionId);
+            if (session.Key != null && session.Value != null)
+            {
+                Clients.Client(session.Key.ConnectionID).addMessage(session.Value.FullName, message);
+                Clients.Client(session.Value.ConnectionID).addMessage(session.Value.FullName, message, session.Key.ConnectionID);
+            }
+            return session;
+        }
+
+        private KeyValuePair<User, User> UserSendMessage(string message)
+        {
+            var session = ChatSessions.SingleOrDefault(x => x.Key.ConnectionID == Context.ConnectionId);
+            if (session.Key != null && session.Value != null)
+            {
+                Clients.Client(session.Key.ConnectionID).addMessage(session.Key.FullName, message);
+                Clients.Client(session.Value.ConnectionID).addMessage(session.Key.FullName, message, session.Key.ConnectionID);
+            }
+            return session;
         }
 
         public override Task OnDisconnected(bool stopCalled)
