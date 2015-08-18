@@ -1,70 +1,70 @@
-﻿    #post-msg {
-        max-width: 100%;
-    }
+﻿#post-msg {
+    max-width: 100%;
+}
 
-    #message-window {
-        border-radius: 5px;
-        min-height: 600px;
-        left:0;
-        right:0;
-        border-style: groove;
-        background-color: #f5f5f5;
-    }
+#message-window {
+    border-radius: 5px;
+    min-height: 600px;
+    left:0;
+    right:0;
+    border-style: groove;
+    background-color: #f5f5f5;
+}
 
-    .discussion {
-        list-style: none;
-        background: #f5f5f5;
-        margin: 0;
-        padding: 0 0 50px 0;
-    }
+.discussion {
+    list-style: none;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0 0 50px 0;
+}
 
-    .discussion > li {
-    padding: 0.5rem;
-    overflow: hidden;
-    }
+.discussion > li {
+padding: 0.5rem;
+overflow: hidden;
+}
 
-    .name {
-        min-width: 80px;
-    }
+.name {
+    min-width: 80px;
+}
 
-    .messages {
-        background: white;
-        padding: 10px;
-        border-radius: 2px;
-        box-shadow: 0 1px 2px;
-        margin-bottom: 10px;
-    }
+.messages {
+    background: white;
+    padding: 10px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px;
+    margin-bottom: 10px;
+}
 
-    .messages > p {
-        margin: 0 0 0 0;
-    }
+.messages > p {
+    margin: 0 0 0 0;
+}
 
-    .name > p {
-        font-family: serif;
-        margin: 0 0 0;
-    }
-    abbr.timeago {
-        font-size: 1rem;
-    }
+.name > p {
+    font-family: serif;
+    margin: 0 0 0;
+}
+abbr.timeago {
+    font-size: 1rem;
+}
 
-    .messages> abbr.timeago {
-        font-size: 0.8rem;
-        color: #ccc;
-    }
+.messages> abbr.timeago {
+    font-size: 0.8rem;
+    color: #ccc;
+}
 
-    input {
-        max-width: 100%;
-    }
+input {
+    max-width: 100%;
+}
 
-    .chat-session {
-        border-bottom: 1px solid #000;
-        cursor: pointer;
-    }
-    .chat-session.active {
-        background-color: lightgray;
-        cursor: default;
-    }
+.chat-session {
+    border-bottom: 1px solid #000;
+    cursor: pointer;
+}
+.chat-session.active {
+    background-color: lightgray;
+    cursor: default;
+}
 
-    #chat-sessions p {
-        margin: 5px;
-    }
+#chat-sessions p {
+    margin: 5px;
+}

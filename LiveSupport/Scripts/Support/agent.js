@@ -1,7 +1,4 @@
-﻿
-$(function () {
-    var chatboxHtml = $(".initial");
-
+﻿$(function () {
     $('#chat-sessions').on({
         click: function () {
             chatboxHtml.remove();
@@ -39,6 +36,8 @@ $(function () {
     startHub();
 });
 
+var chatboxHtml = $(".initial");
+
 hub = $.connection.chatHub;
 function startHub() {
     $.connection.hub.start()
@@ -57,6 +56,8 @@ function updateQuantity(connectionId) {
         $("#chat" + connectionId).find('.badge').text(newChats);
         var snd = new Audio('../Content/Sounds/newmsg.mp3');
         snd.play();
+    } else {
+        scrollToBottom();
     }
 }
 
@@ -93,7 +94,6 @@ function registerClientFunctions() {
             $(".discussion").find('abbr.timeago').timeago();
         }
         updateQuantity(connectionId);
-        scrollToBottom();
     }
 
     hub.client.newChat = function (connectionId, fullName) {
