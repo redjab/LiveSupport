@@ -163,7 +163,7 @@ namespace LiveSupport.Hubs
            
         }
 
-        public void SendMessage(string message, bool isAgent)
+        public void SendMessage(string message, bool isAgent, string connectionId)
         {
             KeyValuePair<User, User> session;
             if (!isAgent)
@@ -172,7 +172,7 @@ namespace LiveSupport.Hubs
             }
             else
             {
-                session = AgentSendMessage(message);
+                session = AgentSendMessage(message, connectionId);
             }
             if (session.Key == null || session.Value == null)
             {
@@ -180,9 +180,11 @@ namespace LiveSupport.Hubs
             }
         }
 
-        private KeyValuePair<User, User> AgentSendMessage(string message)
+        private KeyValuePair<User, User> AgentSendMessage(string message, string connectionId)
         {
-            var session = ChatSessions.SingleOrDefault(x => x.Value.ConnectionID == Context.ConnectionId);
+            //send in the connectionId since the key of ChatSessions is the user's connection id, not the agent's
+            //and the context connectionId here is the agent's
+            var session = ChatSessions.SingleOrDefault(x => x.Key.ConnectionID == connectionId);
             if (session.Key != null && session.Value != null)
             {
                 Clients.Client(session.Key.ConnectionID).addMessage(session.Value.FullName, message);

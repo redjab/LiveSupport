@@ -43,6 +43,10 @@
         font-family: serif;
         margin: 0 0 0;
     }
+    abbr.timeago {
+        font-size: 1rem;
+    }
+
     .messages> abbr.timeago {
         font-size: 0.8rem;
         color: #ccc;
@@ -50,4 +54,18 @@
 
     input {
         max-width: 100%;
+    }
+
+    
+    .chat-session {
+        border-bottom: 1px solid #000;
+        cursor: pointer;
+    }
+    .chat-session.active {
+        background-color: lightgray;
+        cursor: default;
+    }
+
+    #chat-sessions p {
+        margin: 5px;
     }

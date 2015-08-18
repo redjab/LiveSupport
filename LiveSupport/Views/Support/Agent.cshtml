@@ -3,34 +3,19 @@
 }
 
 
-@{Html.RenderPartial("_Chatbox");}
+<div class="col-md-3">
+    <div class="well sidebar-nav">
+        <h3>Chat Sessions</h3>
+        <div id="chat-sessions">
+        </div>
+    </div>
+    <!--/.well -->
+</div>
+<div class="col-md-9 chat-container">
+    @{Html.RenderPartial("_Chatbox");}
+</div>
 
 @section Scripts{
-<script>
-    $(function () {
-        registerClientFunctions();
-        startHub();
-    })
-    hub = $.connection.chatHub;
-
-    function startHub() {
-        $.connection.hub.start()
-        .done(function () {
-            hub.server.connectAgent();
-        })
-        .fail(function () {
-            alert("Unable to connect. Please reload the page.")
-        })
-    }
-
-    function registerClientFunctions() {
-        hub.client.addMessage = function (from, message) {
-            var conversationHtml = '<li class="other"> <div class="name"> <p>' +
-                from + '</p> </div> <div class="messages"> <p>' +
-                message + '</p> <time datetime="2009-11-13T20:00">51 min</time> </div> </li>';
-
-            $(".discussion").append(conversationHtml);
-        }
-    }
-</script>
+<script src="~/Scripts/Support/chatbox.js" type="text/javascript"></script>
+<script src="~/Scripts/Support/agent.js" type="text/javascript"></script>
 }

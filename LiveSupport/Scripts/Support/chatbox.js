@@ -14,12 +14,12 @@ function escapeHtml(string) {
 }
 
 
-function sendMessage(isAgent) {
+function sendMessage(isAgent, connectionId) {
     function send() {
         var message = $('.post-message:visible').val();
         $('.post-message:visible').val('').focus();
         if (message != "") {
-            $.connection.chatHub.server.sendMessage(escapeHtml(message), isAgent);
+            $.connection.chatHub.server.sendMessage(escapeHtml(message), isAgent, connectionId);
         }
     }
 

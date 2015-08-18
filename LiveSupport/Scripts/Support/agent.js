@@ -1,7 +1,7 @@
 ﻿var chatSessions = new Object();
+var chatboxHtml = $(".initial");
 
 $(function () {
-    var chatboxHtml = $(".initial");
 
     $('#chat-sessions').on({
         click: function () {
@@ -9,32 +9,11 @@ $(function () {
             var connectionId = $(this).data('id');
             $('.chat-box').hide();
             var chatSession = $("#chat-box" + connectionId);
-
-            //if not exist already
-            if (chatSession.size() == 0) {
-                var chatBoxClone = chatboxHtml.clone();
-                var id = "chat-box" + connectionId;
-                chatBoxClone.attr('id', id);
-                chatBoxClone.attr('data-id', connectionId);
-                $(".chat-container").append(chatBoxClone);
-            }
-            else {
-                chatSession.show();
-            }
-            for (var i = 0; i < chatSessions[connectionId].messages.length; i++) {
-                $("#chat-box" + connectionId).find('.discussion').append(chatSessions[connectionId].messages[i]);
-                $('#chat-box' + connectionId).find('abbr.timeago').timeago();
-            }
-            $.each(chatSessions, function (key, value) {
-                value.isActive = false;
-            });
-            chatSessions[connectionId].messages = [];
-            chatSessions[connectionId].isActive = true;
-
-            chatSession.find('.discussion').append()
+            chatSession.show();
 
             $('.chat-session').removeClass('active');
             $(this).addClass('active');
+            $('.new-mes').removeClass('new-mes');
 
             var badge = $(this).find('.badge');
             if (badge != null && badge != undefined) {
@@ -44,7 +23,7 @@ $(function () {
 
             $('.send-button').off('click');
 
-            sendMessage(true);
+            sendMessage(true, connectionId);
         }
     }, '.chat-session');
     registerClientFunctions();
@@ -66,38 +45,41 @@ function startHub() {
 
 
 function updateQuantity(connectionId) {
-    $("#chat" + connectionId).find('.badge').text(chatSessions[connectionId].messages.length);
+    var newChats = $("#chat-box" + connectionId).find('.discussion').children('.new-mes').length;
+    var chatPanel = $("#chat" + connectionId);
+    if (!chatPanel.hasClass('active')) {
+        $("#chat" + connectionId).find('.badge').text(newChats);
+    }
+}
+
+function addToChat(connectionId, html) {
+    var chatSession = $("#chat-box" + connectionId);
+
+    if (chatSession.size() == 0) {
+        var chatBoxClone = chatboxHtml.clone();
+        var id = "chat-box" + connectionId;
+        chatBoxClone.attr('id', id);
+        chatBoxClone.attr('data-id', connectionId);
+        $(".chat-container").append(chatBoxClone);
+        chatBoxClone.hide();
+    }
+    var discussionDom = $("#chat-box" + connectionId).find('.discussion')
+    discussionDom.append(html);
+    discussionDom.find('abbr.timeago').timeago();
 }
 
 function registerClientFunctions() {
     hub.client.addMessage = function (from, message, connectionId) {
         var date = new Date();
 
-        var conversationHtml = '<li class="other"> <div class="name"> <p>' +
+        var conversationHtml = '<li class="person new-mes"> <div class="name"> <p>' +
             from + '</p> </div> <div class="messages"> <p>' +
             message + '</p><abbr class="timeago" title="' + date.toISOString() + '">' + date.toISOString() + '</abbr>'
         ;
 
         //if this is a message to the agent, then we have to take care of different sessions he is handling
         if (connectionId != null) {
-            var messages = [];
-            if (chatSessions[connectionId] != null) {
-                messages = chatSessions[connectionId].messages;
-            } else {
-                chatSessions[connectionId] = new Object();
-                chatSessions[connectionId].messages = [];
-                chatSessions[connectionId].isActive = false;
-            }
-
-            if (chatSessions[connectionId].isActive == true) {
-                $(".discussion:visible").append(conversationHtml);
-                $(".discussion:visible").find('abbr.timeago').timeago();
-            }
-            else {
-                messages.push(conversationHtml);
-                chatSessions[connectionId].isActive = false;
-                chatSessions[connectionId].messages = messages;
-            }
+            addToChat(connectionId, conversationHtml);
         } else {
             $(".discussion").append(conversationHtml);
             $(".discussion").find('abbr.timeago').timeago();
@@ -111,9 +93,9 @@ function registerClientFunctions() {
         snd.play();
 
         var notifyHtml = '<div id="chat' + connectionId + '" class="row chat-session" data-id="' + connectionId + '">' +
-                            '<div class="col-md-6">' +
-                            '<abbr class="timeago" title="' + date.toISOString() + '">' + date.toISOString() + '</abbr>' +
-                            '<p><strong>' + fullName + '</strong></p></div>' +
+                            '<div class="col-md-6">' + 
+                            '<p><strong>' + fullName + '</strong></p>' +
+                            '<abbr class="timeago" title="' + date.toISOString() + '">' + date.toISOString() + '</abbr></div>' +
                             '<div class="col-md-6" style="text-align: right;"><a class="close-chat btn btn-mini" href="#"><span class="glyphicon glyphicon-remove"></span></a>' +
                             '<p>Message(s) <span class="badge badge-warning">0</span></p></div>' +
                             '</div>';
