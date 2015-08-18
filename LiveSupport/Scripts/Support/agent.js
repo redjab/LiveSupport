@@ -1,7 +1,6 @@
-﻿var chatSessions = new Object();
-var chatboxHtml = $(".initial");
-
+﻿
 $(function () {
+    var chatboxHtml = $(".initial");
 
     $('#chat-sessions').on({
         click: function () {
@@ -26,13 +25,21 @@ $(function () {
             sendMessage(true, connectionId);
         }
     }, '.chat-session');
+
+    $('#chat-sessions').on({
+        click: function () {
+            var chatSession = $(this).parent().parent();
+            var connectionId = chatSession.data('id');
+            hub.server.agentCloseChat(connectionId);
+            chatSession.remove();
+        }
+    }, '.close-chat');
+
     registerClientFunctions();
     startHub();
-})
+});
+
 hub = $.connection.chatHub;
-
-var chatMessages = [];
-
 function startHub() {
     $.connection.hub.start()
     .done(function () {
@@ -43,12 +50,13 @@ function startHub() {
     })
 }
 
-
 function updateQuantity(connectionId) {
     var newChats = $("#chat-box" + connectionId).find('.discussion').children('.new-mes').length;
     var chatPanel = $("#chat" + connectionId);
     if (!chatPanel.hasClass('active')) {
         $("#chat" + connectionId).find('.badge').text(newChats);
+        var snd = new Audio('../Content/Sounds/newmsg.mp3');
+        snd.play();
     }
 }
 
@@ -85,7 +93,9 @@ function registerClientFunctions() {
             $(".discussion").find('abbr.timeago').timeago();
         }
         updateQuantity(connectionId);
+        scrollToBottom();
     }
+
     hub.client.newChat = function (connectionId, fullName) {
         var date = new Date();
 
@@ -96,7 +106,8 @@ function registerClientFunctions() {
                             '<div class="col-md-6">' + 
                             '<p><strong>' + fullName + '</strong></p>' +
                             '<abbr class="timeago" title="' + date.toISOString() + '">' + date.toISOString() + '</abbr></div>' +
-                            '<div class="col-md-6" style="text-align: right;"><a class="close-chat btn btn-mini" href="#"><span class="glyphicon glyphicon-remove"></span></a>' +
+                            '<div class="col-md-6 mes-num" style="text-align: right;">' +
+                            '<a class="close-chat btn btn-mini" href="#"><span class="glyphicon glyphicon-remove"></span></a>' +
                             '<p>Message(s) <span class="badge badge-warning">0</span></p></div>' +
                             '</div>';
         $("#chat-sessions").prepend(notifyHtml);

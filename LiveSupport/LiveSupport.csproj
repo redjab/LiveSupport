@@ -191,7 +191,6 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Sounds\newchat.mp3" />
     <Content Include="Content\Sounds\newmsg.mp3" />
-    <Content Include="Content\Sounds\raptor-sound.mp3" />
     <Content Include="Scripts\Support\agent.js" />
     <Content Include="Content\Support\chatbox.css" />
     <Content Include="Scripts\Support\chatbox.js" />
@@ -202,7 +201,6 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Content\Sounds\raptor-sound.ogg" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

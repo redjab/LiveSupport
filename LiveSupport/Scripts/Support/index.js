@@ -26,5 +26,6 @@ function registerClientFunctions() {
 
         $(".discussion").append(conversationHtml);
         $(".discussion").find('abbr.timeago').timeago();
+        scrollToBottom();
     }
 }

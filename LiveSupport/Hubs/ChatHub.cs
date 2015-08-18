@@ -85,7 +85,7 @@ namespace LiveSupport.Hubs
         private void RemoveAgentSession(string connectionId, bool removeAgent)
         {
             User temp = null;
-
+            initAgents();
             var agent = Agents.SingleOrDefault(x => x.Value.ConnectionID == connectionId).Value;
             if (agent != null)
             {
@@ -108,7 +108,13 @@ namespace LiveSupport.Hubs
 
         public void AgentCloseChat(string connectionId)
         {
-            RemoveAgentSession(connectionId, false);
+            var session = ChatSessions.SingleOrDefault(x => x.Key.ConnectionID == connectionId);
+            User temp = null;
+            if (session.Key != null)
+            {
+                ChatSessions.TryRemove(session.Key, out temp);
+                Clients.Client(connectionId).addMessage(FROM_ADMIN, AGENT_DISCONNECT);
+            }
         }
 
         public void Leave(string connectionId)
@@ -174,10 +180,6 @@ namespace LiveSupport.Hubs
             {
                 session = AgentSendMessage(message, connectionId);
             }
-            if (session.Key == null || session.Value == null)
-            {
-                Clients.Caller.addMessage(FROM_ADMIN, SESSION_NOT_FOUND);
-            }
         }
 
         private KeyValuePair<User, User> AgentSendMessage(string message, string connectionId)
@@ -190,6 +192,10 @@ namespace LiveSupport.Hubs
                 Clients.Client(session.Key.ConnectionID).addMessage(session.Value.FullName, message);
                 Clients.Client(session.Value.ConnectionID).addMessage(session.Value.FullName, message, session.Key.ConnectionID);
             }
+            else
+            {
+                Clients.Caller.addMessage(FROM_ADMIN, SESSION_NOT_FOUND, connectionId);
+            }
             return session;
         }
 
@@ -200,6 +206,10 @@ namespace LiveSupport.Hubs
             {
                 Clients.Client(session.Key.ConnectionID).addMessage(session.Key.FullName, message);
                 Clients.Client(session.Value.ConnectionID).addMessage(session.Key.FullName, message, session.Key.ConnectionID);
+            }
+            else
+            {
+                Clients.Caller.addMessage(FROM_ADMIN, SESSION_NOT_FOUND);
             }
             return session;
         }

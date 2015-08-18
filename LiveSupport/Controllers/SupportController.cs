@@ -6,15 +6,16 @@ using System.Web.Mvc;
 
 namespace LiveSupport.Controllers
 {
-    [Authorize]
     public class SupportController : Controller
     {
         // GET: Support
+        [Authorize]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles="Agent")]
         public ActionResult Agent()
         {
             return View();

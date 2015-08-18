@@ -13,8 +13,13 @@ function escapeHtml(string) {
     });
 }
 
+function scrollToBottom() {
+    var target = $('html,body');
+    target.animate({ scrollTop: target.height() }, 500);
+}
 
 function sendMessage(isAgent, connectionId) {
+
     function send() {
         var message = $('.post-message:visible').val();
         $('.post-message:visible').val('').focus();
